@@ -17,6 +17,12 @@ public class Searcher<T extends Comparable> {
         return pos;
     }
 
+    public int recLinearSearch(List<T> seq, int pos, T el){
+        if(pos > seq.size() - 1) return -1;
+        if(seq.get(pos).equals(el)) return pos;
+        else return recLinearSearch(seq, ++pos ,el);
+    }
+
     public int binarySearch(List<T> seq, T el) {
         if(seq.isEmpty()) throw new IllegalArgumentException("List is empty");
         if (seq.size() == 1 && seq.get(0).equals(el)) return 0;

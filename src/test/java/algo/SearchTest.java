@@ -36,6 +36,37 @@ public class SearchTest {
     }
 
     @Test
+    @DisplayName("Test rec linear search")
+    void recLinearSearch() {
+        StopWatch watch  = new StopWatch();
+        Searcher<Integer> searcher = new Searcher<>();
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(9);
+        list.add(11);
+        list.add(29);
+        list.add(33);
+        list.add(40);
+        list.add(44);
+        list.add(45);
+        list.add(100);
+
+        for(int e : list){
+            watch.start();
+            int pos = searcher.recLinearSearch(list,0, e);
+            long time = watch.stop();
+            System.out.println(String.format("Linear search processed in %d millis",time));
+            assertEquals(list.indexOf(e),pos);
+        }
+        watch.start();
+        int pos = searcher.recLinearSearch(list,0,55);
+        long time = watch.stop();
+        System.out.println(String.format("Linear search processed in %d millis",time));
+        assertEquals(-1,pos);
+    }
+
+    @Test
     @DisplayName("Test binarySearch search")
     void binarySearch() {
         StopWatch watch  = new StopWatch();
