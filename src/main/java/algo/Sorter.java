@@ -1,5 +1,6 @@
 package algo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,25 +24,57 @@ public class Sorter<T extends Comparable<T>> {
 
     public List<T> insertionSort(List<T> toSort) {
         for (int i = 1; i < toSort.size(); i++) {
-            T el  = toSort.get(i);
-            int j  =  i - 1;
-            while(j >= 0 && toSort.get(j).compareTo(el) > 0 ){
-                toSort.set(j + 1,toSort.get(j));
+            T el = toSort.get(i);
+            int j = i - 1;
+            while (j >= 0 && toSort.get(j).compareTo(el) > 0) {
+                toSort.set(j + 1, toSort.get(j));
                 --j;
             }
-            toSort.set(j + 1,el);
+            toSort.set(j + 1, el);
         }
 
         return toSort;
     }
 
 
-    private List<T> swap(List<T> elements, int left, int right) {
-        List<T> safeEls = elements;
-        T buff = elements.get(left);
-        elements.set(left, elements.get(right));
-        elements.set(right, buff);
-        return safeEls;
+    public List<T> mergeSort(List<T> subject) {
+        return doMerge(subject);
     }
 
+    private List<T> doMerge(List<T> subject) {
+        if (subject.size() == 1) return subject;
+        int q = subject.size() / 2;
+        return merge(doMerge(subject.subList(0, q)), doMerge(subject.subList(q, subject.size())));
+    }
+
+    private List<T> merge(List<T> left, List<T> right) {
+        List<T> merged = new ArrayList<>();
+
+        int i = 0;
+        int j = 0;
+
+        while (i < left.size() || j < right.size()) {
+            if (i == left.size()) {
+                merged.add(right.get(j));
+                j++;
+            } else if (j == right.size()) {
+                merged.add(left.get(i));
+                i++;
+            } else {
+                T l = left.get(i);
+                T r = right.get(j);
+
+                if (l.compareTo(r) < 0) {
+                    merged.add(l);
+                    i++;
+                } else {
+                    merged.add(r);
+                    j++;
+                }
+            }
+
+        }
+
+        return merged;
+    }
 }
