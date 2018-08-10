@@ -77,4 +77,36 @@ public class Sorter<T extends Comparable<T>> {
 
         return merged;
     }
+
+    public void quickSort(List<T> subject){
+        qSort(subject,0,subject.size()-1);
+    }
+
+    private void qSort(List<T> subject,int s,int e){
+        if(s < e){
+            int p = partition(subject,s,e);
+            qSort(subject,s,p-1);
+            qSort(subject,p + 1,e);
+        }
+    }
+
+    private int partition(List<T> subject,int s,int e){
+
+        int i = s-1;
+        int j = s;
+        T el = subject.get(e);
+        while(j <= e){
+            T curr = subject.get(j);
+            if(curr.compareTo(el) <= 0){
+                i++;
+                if(i != j){
+                    T aux = subject.get(i);
+                    subject.set(i,curr);
+                    subject.set(j,aux);
+                }
+            }
+            j++;
+        }
+        return i;
+    }
 }

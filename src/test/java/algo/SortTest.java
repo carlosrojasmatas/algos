@@ -86,4 +86,31 @@ public class SortTest {
         assertTrue(r.get(6)== 22);
 
     }
+
+    @Test
+    @DisplayName("Sort list with quick sorter")
+    void testQuickSort(){
+        Sorter<Integer> sorter = new Sorter<>();
+
+        List<Integer> list  = new ArrayList<>();
+        list.add(20);
+        list.add(2);
+        list.add(1);
+        list.add(11);
+        list.add(22);
+        list.add(3);
+        list.add(8);
+
+        sorter.quickSort(list);
+
+
+        assertTrue(list.get(0)== 1);
+        assertTrue(list.get(1)== 2);
+        assertTrue(list.get(2)== 3);
+        assertTrue(list.get(3)== 8);
+        assertTrue(list.get(4)== 11);
+        assertTrue(list.get(5)== 20);
+        assertTrue(list.get(6)== 22);
+
+    }
 }
