@@ -2,347 +2,298 @@ package trees.avl;
 
 import org.junit.jupiter.api.Test;
 import trees.avl.AvlTree;
-import trees.bst.Node;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AVLTreeTest {
 
     @Test
-    void testDepth(){
-        AvlTree<Integer> avl = new AvlTree<>(false);
-        avl.insert(10);
-        avl.insert(6);
-        avl.insert(4);
-        avl.insert(8);
-        avl.insert(7);
-        avl.insert(9);
-        avl.insert(5);
-        avl.insert(3);
-        avl.insert(2);
+    void testInsert() {
+        AvlTree<Integer> tree = new AvlTree<>(false);
+        tree.insert(50);
+        tree.insert(40);
+        tree.insert(60);
+        tree.insert(44);
+        tree.insert(35);
+        tree.insert(55);
+        tree.insert(70);
 
-        avl.insert(50);
-        avl.insert(12);
+        assertEquals("35 40 44 50 55 60 70", tree.traverse().trim());
+        assertEquals(2, tree.depth());
+
+        Node<Integer> root = tree.copyOfRoot();
+
+        assertEquals(Integer.valueOf(50), root.getValue());
+        assertEquals(Integer.valueOf(40), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(60), root.getRight().getValue());
+        assertEquals(Integer.valueOf(44), root.getLeft().getRight().getValue());
+        assertEquals(Integer.valueOf(35), root.getLeft().getLeft().getValue());
+        assertEquals(Integer.valueOf(55), root.getRight().getLeft().getValue());
+        assertEquals(Integer.valueOf(70), root.getRight().getRight().getValue());
+
+
+        //case I withouth parents
+        tree = new AvlTree<>();
+        tree.insert(50);
+        tree.insert(40);
+        tree.insert(30);
+
+        assertEquals("30 40 50", tree.traverse());
+        assertEquals(1, tree.depth());
+
+        root = tree.copyOfRoot();
+        assertEquals(Integer.valueOf(40), root.getValue());
+        assertEquals(Integer.valueOf(30), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(50), root.getRight().getValue());
+
+        //case II
+        tree = new AvlTree<>();
+        tree.insert(50);
+        tree.insert(60);
+        tree.insert(70);
+
+        root = tree.copyOfRoot();
+        assertEquals(Integer.valueOf(60), root.getValue());
+        assertEquals(Integer.valueOf(50), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(70), root.getRight().getValue());
+
+
+        assertEquals("50 60 70", tree.traverse());
+        assertEquals(1, tree.depth());
+
+        //case III
+        tree = new AvlTree<>();
+        tree.insert(50);
+        tree.insert(40);
+        tree.insert(45);
+
+        root = tree.copyOfRoot();
+        assertEquals(Integer.valueOf(45), root.getValue());
+        assertEquals(Integer.valueOf(40), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(50), root.getRight().getValue());
+
+        assertEquals("40 45 50", tree.traverse());
+        assertEquals(1, tree.depth());
+
+
+        //case I deeper in herarchy
+        tree = new AvlTree<>();
+
+        tree.insert(50);
+        tree.insert(40);
+        tree.insert(60);
+        tree.insert(35);
+        tree.insert(45);
+        tree.insert(20);
+
+        assertEquals(2, tree.depth());
+        assertEquals("20 35 40 45 50 60", tree.traverse());
+        root = tree.copyOfRoot();
+
+        assertEquals(Integer.valueOf(40), root.getValue());
+        //left tree
+        assertEquals(Integer.valueOf(35), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(20), root.getLeft().getLeft().getValue());
+
+        //rigth tree
+        assertEquals(Integer.valueOf(50), root.getRight().getValue());
+        assertEquals(Integer.valueOf(45), root.getRight().getLeft().getValue());
+        assertEquals(Integer.valueOf(60), root.getRight().getRight().getValue());
+
+        //case II deeper in herarchy
+        tree = new AvlTree<>();
+
+        tree.insert(50);
+        tree.insert(40);
+        tree.insert(60);
+        tree.insert(35);
+        tree.insert(45);
+        tree.insert(36);
+
+        assertEquals(2, tree.depth());
+        assertEquals("35 36 40 45 50 60", tree.traverse());
+        root = tree.copyOfRoot();
+
+        assertEquals(Integer.valueOf(40), root.getValue());
+        //left tree
+        assertEquals(Integer.valueOf(35), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(36), root.getLeft().getRight().getValue());
+
+        //rigth tree
+        assertEquals(Integer.valueOf(50), root.getRight().getValue());
+        assertEquals(Integer.valueOf(45), root.getRight().getLeft().getValue());
+        assertEquals(Integer.valueOf(60), root.getRight().getRight().getValue());
+
+        //case III deeper in herarchy
+        tree = new AvlTree<>();
+
+        tree.insert(50);
+        tree.insert(40);
+        tree.insert(60);
+        tree.insert(70);
+        tree.insert(55);
+        tree.insert(75);
+
+        assertEquals(2, tree.depth());
+        assertEquals("40 50 55 60 70 75", tree.traverse());
+        root = tree.copyOfRoot();
+
+        assertEquals(Integer.valueOf(60), root.getValue());
+        //left tree
+        assertEquals(Integer.valueOf(50), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(55), root.getLeft().getRight().getValue());
+        assertEquals(Integer.valueOf(40), root.getLeft().getLeft().getValue());
+
+        //rigth tree
+        assertEquals(Integer.valueOf(70), root.getRight().getValue());
+        assertEquals(Integer.valueOf(75), root.getRight().getRight().getValue());
+
+    }
+
+
+    @Test
+    void testDeleteLeaf() {
+        AvlTree<Integer> avl = new AvlTree<>(true);
+
         avl.insert(60);
-        avl.insert(20);
-        avl.insert(11);
-        avl.insert(55);
-
-        assertEquals(4,avl.height());
-
-        avl.clear();
-
         avl.insert(50);
         avl.insert(40);
-        avl.insert(44);
-        avl.insert(39);
-        avl.insert(60);
         avl.insert(55);
         avl.insert(70);
+        avl.insert(75);
 
-        assertEquals(2,avl.height());
+        avl.delete(40);
+
+        assertEquals("50 55 60 70 75", avl.traverse());
+        assertEquals(2, avl.depth());
+
+        Node<Integer> root = avl.copyOfRoot();
+        assertEquals(Integer.valueOf(60), root.getValue());
+        assertEquals(Integer.valueOf(50), root.getLeft().getValue());
+        assertEquals(Integer.valueOf(70), root.getRight().getValue());
+        assertEquals(Integer.valueOf(75), root.getRight().getRight().getValue());
+        assertEquals(Integer.valueOf(55), root.getLeft().getRight().getValue());
+        assertTrue(root.getLeft().getLeft() == null);
+
     }
 
     @Test
-    void testBalanced() {
-        AvlTree<Integer> avl = new AvlTree<>(false);
-        avl.insert(10);
-        avl.insert(6);
-        avl.insert(4);
-        avl.insert(8);
-        avl.insert(7);
-        avl.insert(9);
-        avl.insert(5);
-        avl.insert(3);
-        avl.insert(2);
+    void testDeleteLeftChild() {
+        AvlTree<Integer> avl = new AvlTree<>(true);
 
-        avl.insert(50);
-        avl.insert(12);
         avl.insert(60);
-        avl.insert(20);
-        avl.insert(11);
+        avl.insert(70);
+        avl.insert(50);
+        avl.insert(75);
+        avl.insert(40);
+
+        avl.delete(50);
+
+        assertEquals("40 60 70 75", avl.traverse());
+        assertEquals(2, avl.depth());
+
+        Node<Integer> root = avl.copyOfRoot();
+        assertEquals(Integer.valueOf(40), root.getLeft().getValue());
+
+    }
+
+    @Test
+    void testDeleteRightChild() {
+        AvlTree<Integer> avl = new AvlTree<>(true);
+
+        avl.insert(60);
+        avl.insert(70);
+        avl.insert(50);
+        avl.insert(75);
+        avl.insert(40);
         avl.insert(55);
 
-        assertTrue(avl.isBalanced());
+        avl.delete(75);
 
-        avl.clear();
-
-        //single left child
-        avl.insert(10);
-        avl.insert(9);
-
-        assertTrue(avl.isBalanced());
-
-        avl.clear();
-
-        //single right child
-        avl.insert(10);
-        avl.insert(11);
-
-        //two single childs
-        avl.insert(10);
-        avl.insert(9);
-        avl.insert(11);
-
-        assertTrue(avl.isBalanced());
-
-        //left longer by one
-        avl.clear();
-        avl.insert(10);
-        avl.insert(9);
-        avl.insert(8);
-        avl.insert(11);
-
-        assertTrue(avl.isBalanced());
-
-        //right longer by one
-
-        avl.clear();
-        avl.insert(10);
-        avl.insert(11);
-        avl.insert(12);
-        avl.insert(9);
-
-        assertTrue(avl.isBalanced());
-
+        assertEquals("40 50 55 60 70", avl.traverse());
+        assertEquals(Integer.valueOf(70), avl.copyOfRoot().getRight().getValue());
 
     }
 
     @Test
-    void testUnbalanced() {
-        AvlTree<Integer> avl = new AvlTree<>(false);
-        /* only left childs
-         *         a
-         *        /
-         *       b
-         *      /
-         *     c
-         * */
-        avl.insert(20);
-        avl.insert(19);
-        avl.insert(18);
-        assertFalse(avl.isBalanced());
+    void testDeleteWithBothChilds() {
+        AvlTree<Integer> avl = new AvlTree<>();
 
-        /* only right childs
-         *         a
-         *          \
-         *           b
-         *            \
-         *             c
-         * */
-        avl.clear();
-        avl.insert(10);
-        avl.insert(11);
-        avl.insert(12);
-        assertFalse(avl.isBalanced());
+        avl.insert(60);
+        avl.insert(50);
+        avl.insert(70);
+        avl.insert(40);
+        avl.insert(75);
+        avl.insert(55);
 
-        /* root with one left child with one right child
-         *         a
-         *        /
-         *       b
-         *        \
-         *         c
-         * */
-        avl.clear();
-        avl.insert(11);
-        avl.insert(9);
-        avl.insert(10);
-        assertFalse(avl.isBalanced());
+        avl.delete(50);
 
-        /* root with one right child with one left child
-         *         a
-         *          \
-         *           b
-         *          /
-         *         c
-         * */
-        avl.clear();
-        avl.insert(10);
-        avl.insert(12);
-        avl.insert(11);
-        assertFalse(avl.isBalanced());
+        assertEquals("40 55 60 70 75", avl.traverse());
 
     }
 
     @Test
-    void testRightRotation() {
+    void testDeleteRoot() {
+        AvlTree<Integer> avl = new AvlTree<>();
 
-        AvlTree<Integer> tree = new AvlTree<>(false);
-        tree.insert(10);
-        tree.insert(9);
-        tree.insert(8);
+        avl.insert(60);
+        avl.insert(50);
+        avl.insert(70);
+        avl.insert(40);
+        avl.insert(75);
+        avl.insert(55);
 
-        tree.rotateRight(tree.getRoot().get());
+        avl.delete(60);
 
-        assertEquals(Integer.valueOf(9), tree.getRoot().get().getValue());
-        assertEquals(Integer.valueOf(10), tree.getRoot().get().getRight().get().getValue());
-        assertEquals(Integer.valueOf(8), tree.getRoot().get().getLeft().get().getValue());
-
-        tree.clear();
-        tree.insert(10);
-        tree.insert(9);
-        tree.insert(8);
-        tree.insert(7);
-
-        Node<Integer> nine = tree.searchAsNode(9).get();
-
-        tree.rotateRight(nine);
-
-        Node<Integer> eight = tree.getRoot().get().getLeft().get();
-        assertEquals(Integer.valueOf(8), eight.getValue());
-        assertEquals(Integer.valueOf(7), eight.getLeft().get().getValue());
-        assertEquals(Integer.valueOf(9), eight.getRight().get().getValue());
-        assertEquals(Integer.valueOf(8), nine.getParent().get().getValue());
-        assertEquals(Integer.valueOf(10), eight.getParent().get().getValue());
-        assertTrue(nine.isLeaf());
-
-        tree.clear();
-
-        tree.insert(10);
-        tree.insert(7);
-        tree.insert(9);
-
-        tree.rotateRight(tree.getRoot().get());
-
-        assertEquals(Integer.valueOf(9),tree.getRoot().get().getValue());
-        assertEquals(Integer.valueOf(7),tree.getRoot().get().getLeft().get().getValue());
-        assertEquals(Integer.valueOf(10),tree.getRoot().get().getRight().get().getValue());
-
+        assertEquals("40 50 55 70 75", avl.traverse());
+        assertEquals(2, avl.depth());
+        assertEquals(Integer.valueOf(55), avl.copyOfRoot().getValue());
+        assertEquals(Integer.valueOf(50), avl.copyOfRoot().getLeft().getValue());
+        assertNull(avl.copyOfRoot().getLeft().getRight());
     }
 
-    @Test
-    void testLeftRotation() {
-
-        AvlTree<Integer> tree = new AvlTree<>(false);
-
-        tree.insert(11);
-        tree.insert(12);
-        tree.insert(13);
-
-        tree.rotateLeft(tree.getRoot().get());
-
-        assertEquals(Integer.valueOf(12), tree.getRoot().get().getValue());
-        assertEquals(Integer.valueOf(13), tree.getRoot().get().getRight().get().getValue());
-        assertEquals(Integer.valueOf(11), tree.getRoot().get().getLeft().get().getValue());
-
-        tree.clear();
-        tree.insert(11);
-        tree.insert(12);
-        tree.insert(13);
-        tree.insert(14);
-
-        Node<Integer> twelve = tree.searchAsNode(12).get();
-
-        tree.rotateLeft(twelve);
-
-        Node<Integer> thirteen = tree.getRoot().get().getRight().get();
-        assertEquals(Integer.valueOf(13), thirteen.getValue());
-        assertEquals(Integer.valueOf(12), thirteen.getLeft().get().getValue());
-        assertEquals(Integer.valueOf(14), thirteen.getRight().get().getValue());
-        assertEquals(Integer.valueOf(13), twelve.getParent().get().getValue());
-        assertEquals(Integer.valueOf(11),thirteen.getParent().get().getValue());
-        assertTrue(twelve.isLeaf());
-
-        tree.clear();
-
-        tree.insert(10);
-        tree.insert(15);
-        tree.insert(12);
-
-        tree.rotateLeft(tree.getRoot().get());
-
-        assertEquals(Integer.valueOf(12),tree.getRoot().get().getValue());
-        assertEquals(Integer.valueOf(10),tree.getRoot().get().getLeft().get().getValue());
-        assertEquals(Integer.valueOf(15),tree.getRoot().get().getRight().get().getValue());
-
-    }
 
     @Test
-    void testRotate(){
-        AvlTree<Integer> tree = new AvlTree<>();
+    void testDeleteAndBalance() {
+        AvlTree<Integer> avl = new AvlTree<>();
 
-        tree.insert(12);
-        tree.insert(11);
-        tree.insert(10);
-        tree.insert(9);
+        avl.insert(60);
+        avl.insert(50);
+        avl.insert(70);
+        avl.insert(40);
+        avl.insert(75);
+        avl.insert(55);
 
-        assertTrue(tree.isBalanced());
+        avl.delete(50);
+        avl.delete(55);
+        avl.delete(40);
 
-        Node<Integer> root = tree.getRoot().get();
-        assertEquals(Integer.valueOf(11),root.getValue());
+        assertEquals("60 70 75", avl.traverse());
+        assertEquals(1, avl.depth());
 
-        Node<Integer> lChild = root.getLeft().get();
-        Node<Integer> rChild = root.getRight().get();
-        assertEquals(Integer.valueOf(10),lChild.getValue());
-        assertEquals(Integer.valueOf(9),lChild.getLeft().get().getValue());
-        assertEquals(Integer.valueOf(12),rChild.getValue());
-
-        tree.clear();
-
-        tree.insert(9);
-        tree.insert(10);
-        tree.insert(11);
-        tree.insert(12);
-
-        assertTrue(tree.isBalanced());
-
-        root = tree.getRoot().get();
-        assertEquals(Integer.valueOf(10),root.getValue());
-
-        lChild = root.getLeft().get();
-        rChild = root.getRight().get();
-        assertEquals(Integer.valueOf(9),lChild.getValue());
-        assertEquals(Integer.valueOf(11),rChild.getValue());
-        assertEquals(Integer.valueOf(12),rChild.getRight().get().getValue());
-
-        tree.clear();
-
-        tree.insert(100);
-        tree.insert(20);
-        tree.insert(150);
-        tree.insert(19);
-        tree.insert(30);
-        tree.insert(110);
-        tree.insert(160);
-
-        assertTrue(tree.isBalanced());
-
-        tree.insert(18);
-        tree.insert(17);
-
-        assertTrue(tree.isBalanced());
-
-        Node<Integer> eigthTeen = tree.searchAsNode(18).get();
-        Node<Integer> twenty = tree.searchAsNode(20).get();
-        assertEquals(Integer.valueOf(17),eigthTeen.getLeft().get().getValue());
-        assertEquals(Integer.valueOf(19),eigthTeen.getRight().get().getValue());
-        assertEquals(Integer.valueOf(20),eigthTeen.getParent().get().getValue());
-        assertEquals(Integer.valueOf(18),twenty.getLeft().get().getValue());
+        assertEquals(Integer.valueOf(70), avl.copyOfRoot().getValue());
+        assertEquals(Integer.valueOf(60), avl.copyOfRoot().getLeft().getValue());
+        assertEquals(Integer.valueOf(75), avl.copyOfRoot().getRight().getValue());
 
 
-        tree.clear();
+        avl = new AvlTree<>();
 
-        tree.insert(100);
-        tree.insert(20);
-        tree.insert(150);
-        tree.insert(7);
-        tree.insert(30);
-        tree.insert(110);
-        tree.insert(160);
+        avl.insert(60);
+        avl.insert(50);
+        avl.insert(70);
+        avl.insert(40);
+        avl.insert(75);
+        avl.insert(55);
 
-        assertTrue(tree.isBalanced());
+        avl.delete(75);
+        avl.delete(70);
 
-        tree.insert(8);
-        tree.insert(9);
 
-        assertTrue(tree.isBalanced());
-
-        Node<Integer> eight = tree.searchAsNode(8).get();
-        twenty = tree.searchAsNode(20).get();
-        assertEquals(Integer.valueOf(7),eight.getLeft().get().getValue());
-        assertEquals(Integer.valueOf(9),eight.getRight().get().getValue());
-        assertEquals(Integer.valueOf(8),twenty.getRight().get().getValue());
-
+        assertEquals("40 50 55 60",avl.traverse());
+        assertEquals(Integer.valueOf(50),avl.copyOfRoot().getValue());
+        assertEquals(Integer.valueOf(60),avl.copyOfRoot().getRight().getValue());
+        assertEquals(Integer.valueOf(55),avl.copyOfRoot().getRight().getLeft().getValue());
+        assertEquals(Integer.valueOf(40),avl.copyOfRoot().getLeft().getValue());
 
     }
 
